@@ -1,7 +1,9 @@
 package com.sosyal.api.routes
 
+import at.favre.lib.crypto.bcrypt.BCrypt
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
+import com.sosyal.api.data.model.request.LoginRequest
 import com.sosyal.api.data.model.request.RegisterRequest
 import com.sosyal.api.data.model.response.BaseResponse
 import com.sosyal.api.data.repository.UserRepository
@@ -47,6 +49,45 @@ fun Route.configureAuthRoutes(
             .withAudience(audience)
             .withIssuer(issuer)
             .withClaim("username", registerRequest.username)
+            .sign(Algorithm.HMAC256(secret))
+
+        call.respond(
+            status = HttpStatusCode.Created,
+            message = BaseResponse(
+                message = "Register account is success",
+                data = hashMapOf("accessToken" to token)
+            )
+        )
+    }
+
+    post("/login") {
+        val loginRequest = call.receive<LoginRequest>()
+
+        val user = userRepository.getUser(loginRequest.username) ?: return@post call.respond(
+            status = HttpStatusCode.Unauthorized,
+            message = BaseResponse<JsonObject>(
+                message = "Username or password is incorrect"
+            )
+        )
+
+        val pwComparingResult = BCrypt.verifyer().verify(
+            loginRequest.password.toCharArray(),
+            user.password
+        )
+
+        if (!pwComparingResult.verified) {
+            return@post call.respond(
+                status = HttpStatusCode.Unauthorized,
+                message = BaseResponse<JsonObject>(
+                    message = "Username or password is incorrect"
+                )
+            )
+        }
+
+        val token = JWT.create()
+            .withAudience(audience)
+            .withIssuer(issuer)
+            .withClaim("username", loginRequest.username)
             .sign(Algorithm.HMAC256(secret))
 
         call.respond(
