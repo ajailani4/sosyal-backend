@@ -1,5 +1,8 @@
 val ktor_version: String by project
 val kotlin_version: String by project
+val kmongo_version: String by project
+val koin_version: String by project
+val bcrypt_version: String by project
 val logback_version: String by project
 
 plugins {
@@ -9,7 +12,7 @@ plugins {
 }
 
 group = "com.sosyal.api"
-version = "0.0.1"
+version = "1.0.0"
 application {
     mainClass.set("com.sosyal.api.ApplicationKt")
 
@@ -30,6 +33,11 @@ dependencies {
     implementation("io.ktor:ktor-server-auth-jwt-jvm:$ktor_version")
     implementation("io.ktor:ktor-server-netty-jvm:$ktor_version")
     implementation("ch.qos.logback:logback-classic:$logback_version")
+    implementation("org.litote.kmongo:kmongo:$kmongo_version")
+    implementation("io.insert-koin:koin-ktor:$koin_version")
+    implementation("io.insert-koin:koin-logger-slf4j:$koin_version")
+    implementation("at.favre.lib:bcrypt:$bcrypt_version")
+
     testImplementation("io.ktor:ktor-server-tests-jvm:$ktor_version")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
 }
