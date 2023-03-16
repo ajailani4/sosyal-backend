@@ -7,6 +7,7 @@ import com.sosyal.api.data.model.request.LoginRequest
 import com.sosyal.api.data.model.request.RegisterRequest
 import com.sosyal.api.data.model.response.BaseResponse
 import com.sosyal.api.data.repository.UserRepository
+import com.sosyal.api.util.JWTUtil
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
@@ -20,7 +21,7 @@ fun Route.configureAuthRoutes(
     issuer: String,
     audience: String
 ) {
-   val userRepository by inject<UserRepository>()
+    val userRepository by inject<UserRepository>()
 
     post("/register") {
         val registerRequest = call.receive<RegisterRequest>()
@@ -45,11 +46,12 @@ fun Route.configureAuthRoutes(
             )
         }
 
-        val token = JWT.create()
-            .withAudience(audience)
-            .withIssuer(issuer)
-            .withClaim("username", registerRequest.username)
-            .sign(Algorithm.HMAC256(secret))
+        val token = JWTUtil.createJWT(
+            secret = secret,
+            issuer = issuer,
+            audience = audience,
+            username = registerRequest.username
+        )
 
         call.respond(
             status = HttpStatusCode.Created,
@@ -84,16 +86,17 @@ fun Route.configureAuthRoutes(
             )
         }
 
-        val token = JWT.create()
-            .withAudience(audience)
-            .withIssuer(issuer)
-            .withClaim("username", loginRequest.username)
-            .sign(Algorithm.HMAC256(secret))
+        val token = JWTUtil.createJWT(
+            secret = secret,
+            issuer = issuer,
+            audience = audience,
+            username = loginRequest.username
+        )
 
         call.respond(
             status = HttpStatusCode.Created,
             message = BaseResponse(
-                message = "Register account is success",
+                message = "Login account is success",
                 data = hashMapOf("accessToken" to token)
             )
         )
