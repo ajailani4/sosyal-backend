@@ -1,6 +1,6 @@
 package com.sosyal.api.data.repository.impl
 
-import com.sosyal.api.data.model.Post
+import com.sosyal.api.data.entity.Post
 import com.sosyal.api.data.repository.PostRepository
 import com.sosyal.api.data.service.PostService
 import org.litote.kmongo.Id

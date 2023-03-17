@@ -1,7 +1,7 @@
 package com.sosyal.api.data.service
 
 import com.mongodb.client.MongoClient
-import com.sosyal.api.data.model.Post
+import com.sosyal.api.data.entity.Post
 import org.litote.kmongo.Id
 import org.litote.kmongo.findOneById
 import org.litote.kmongo.getCollection
