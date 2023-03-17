@@ -1,4 +1,4 @@
-package com.sosyal.api.data.model
+package com.sosyal.api.data.entity
 
 import org.bson.codecs.pojo.annotations.BsonId
 import org.litote.kmongo.Id

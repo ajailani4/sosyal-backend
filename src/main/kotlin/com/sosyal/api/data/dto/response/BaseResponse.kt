@@ -1,4 +1,4 @@
-package com.sosyal.api.data.model.response
+package com.sosyal.api.data.dto.response
 
 import kotlinx.serialization.Serializable
 

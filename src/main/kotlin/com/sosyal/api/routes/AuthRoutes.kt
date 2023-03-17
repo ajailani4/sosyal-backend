@@ -1,11 +1,9 @@
 package com.sosyal.api.routes
 
 import at.favre.lib.crypto.bcrypt.BCrypt
-import com.auth0.jwt.JWT
-import com.auth0.jwt.algorithms.Algorithm
-import com.sosyal.api.data.model.request.LoginRequest
-import com.sosyal.api.data.model.request.RegisterRequest
-import com.sosyal.api.data.model.response.BaseResponse
+import com.sosyal.api.data.dto.request.LoginRequest
+import com.sosyal.api.data.dto.request.RegisterRequest
+import com.sosyal.api.data.dto.response.BaseResponse
 import com.sosyal.api.data.repository.UserRepository
 import com.sosyal.api.util.JWTUtil
 import io.ktor.http.*
