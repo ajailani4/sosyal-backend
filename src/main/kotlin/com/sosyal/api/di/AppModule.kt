@@ -1,6 +1,8 @@
 package com.sosyal.api.di
 
+import com.sosyal.api.data.repository.PostRepository
 import com.sosyal.api.data.repository.UserRepository
+import com.sosyal.api.data.repository.impl.PostRepositoryImpl
 import com.sosyal.api.data.repository.impl.UserRepositoryImpl
 import com.sosyal.api.data.service.PostService
 import com.sosyal.api.data.service.UserService
@@ -12,4 +14,5 @@ val appModule = module {
     single { UserService(get()) }
     single { PostService(get()) }
     single<UserRepository> { UserRepositoryImpl(get()) }
+    single<PostRepository> { PostRepositoryImpl(get()) }
 }
