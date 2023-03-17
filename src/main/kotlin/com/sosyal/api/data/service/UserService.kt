@@ -7,7 +7,7 @@ import com.sosyal.api.data.model.User
 import org.litote.kmongo.*
 
 class UserService(client: MongoClient) {
-    private val database = client.getDatabase("sosyal_db")
+    private val database = client.getDatabase(System.getenv("DB_NAME"))
     private val userCollection = database.getCollection<User>("user")
 
     fun addUser(registerRequest: RegisterRequest): Boolean {
