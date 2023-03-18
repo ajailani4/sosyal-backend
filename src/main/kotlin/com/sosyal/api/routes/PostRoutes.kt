@@ -1,8 +1,6 @@
 package com.sosyal.api.routes
 
 import com.sosyal.api.data.dto.PostDto
-import com.sosyal.api.data.mapper.toPost
-import com.sosyal.api.data.mapper.toPostDto
 import com.sosyal.api.data.repository.PostRepository
 import com.sosyal.api.util.Connection
 import io.ktor.server.auth.*
@@ -21,6 +19,7 @@ fun Route.configurePostRoutes(connections: MutableSet<Connection>) {
     authenticate("auth-jwt") {
         webSocket("/post") {
             val principal = call.principal<JWTPrincipal>()
+            val postEdit = call.request.queryParameters["postEdit"]
             val username = principal!!.payload.getClaim("username").asString()
             val connection = Connection(
                 session = this,
@@ -29,8 +28,8 @@ fun Route.configurePostRoutes(connections: MutableSet<Connection>) {
             connections += connection
 
             try {
-                postRepository.getAllPosts().forEach { post ->
-                    connection.session.send(Json.encodeToString(post.toPostDto()))
+                postRepository.getAllPosts().forEach { postDto ->
+                    connection.session.send(Json.encodeToString(postDto))
                 }
 
                 for (frame in incoming) {
@@ -38,11 +37,18 @@ fun Route.configurePostRoutes(connections: MutableSet<Connection>) {
                     val postDtoText = frame.readText()
                     val postDto = Json.decodeFromString<PostDto>(postDtoText)
 
-                    postRepository.addPost(postDto.toPost())?.let { postId ->
+                    val result = if (postEdit == "true") {
+                        postRepository.editPost(
+                            id = postDto.id!!,
+                            postDto = postDto
+                        )
+                    } else {
+                        postRepository.addPost(postDto)
+                    }
+
+                    if (result) {
                         connections.forEach { conn ->
-                            postRepository.getPost(postId)?.let { post ->
-                                conn.session.send(Json.encodeToString(post.toPostDto()))
-                            }
+                            conn.session.send(Json.encodeToString(postDto))
                         }
                     }
                 }
