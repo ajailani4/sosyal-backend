@@ -11,7 +11,7 @@ import org.litote.kmongo.Id
 import org.litote.kmongo.id.toId
 
 class PostRepositoryImpl(private val postService: PostService) : PostRepository {
-    override fun addPost(postDto: PostDto) = postService.addPost(postDto.toPost())
+    override fun addPost(postDto: PostDto) = postService.addPost(postDto.toPost()).toString()
 
     override fun getAllPosts() = postService.getAllPosts().map { post -> post.toPostDto() }
 
@@ -20,7 +20,7 @@ class PostRepositoryImpl(private val postService: PostService) : PostRepository 
     override fun editPost(id: String, postDto: PostDto) = postService.editPost(
         id = ObjectId(id).toId(),
         post = postDto.toPost()
-    )
+    ).toString()
 
     override fun deletePost(id: String) = postService.deletePost(ObjectId(id).toId())
 }

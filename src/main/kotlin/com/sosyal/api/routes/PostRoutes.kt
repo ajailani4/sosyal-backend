@@ -42,7 +42,7 @@ fun Route.configurePostRoutes(connections: MutableSet<Connection>) {
                     val postDtoText = frame.readText()
                     val postDto = Json.decodeFromString<PostDto>(postDtoText)
 
-                    val result = if (postEdit == "true") {
+                    val id = if (postEdit == "true") {
                         postRepository.editPost(
                             id = postDto.id!!,
                             postDto = postDto
@@ -51,10 +51,8 @@ fun Route.configurePostRoutes(connections: MutableSet<Connection>) {
                         postRepository.addPost(postDto)
                     }
 
-                    if (result) {
-                        connections.forEach { conn ->
-                            conn.session.send(Json.encodeToString(postDto))
-                        }
+                    connections.forEach { conn ->
+                        conn.session.send(Json.encodeToString(postDto.copy(id = id)))
                     }
                 }
 
