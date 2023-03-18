@@ -11,4 +11,6 @@ class PostRepositoryImpl(private val postService: PostService) : PostRepository 
     override fun getAllPosts() = postService.getAllPosts()
 
     override fun getPost(id: Id<Post>) = postService.getPost(id)
+
+    override fun editPost(id: Id<Post>, post: Post) = postService.editPost(id, post)
 }
