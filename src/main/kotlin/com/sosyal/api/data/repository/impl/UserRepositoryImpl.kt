@@ -1,6 +1,6 @@
 package com.sosyal.api.data.repository.impl
 
-import com.sosyal.api.data.model.request.RegisterRequest
+import com.sosyal.api.data.dto.request.RegisterRequest
 import com.sosyal.api.data.repository.UserRepository
 import com.sosyal.api.data.service.UserService
 

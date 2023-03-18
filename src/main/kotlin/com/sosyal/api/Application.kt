@@ -19,7 +19,7 @@ fun Application.module() {
     }
 
     configureSerialization()
-    configureSockets()
     configureSecurity()
+    configureSockets()
     configureRouting()
 }
