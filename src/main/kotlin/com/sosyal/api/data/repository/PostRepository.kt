@@ -9,4 +9,5 @@ interface PostRepository {
     fun getAllPosts(): List<PostDto>
     fun getPost(id: String): PostDto?
     fun editPost(id: String, postDto: PostDto): Boolean
+    fun deletePost(id: String): Boolean
 }

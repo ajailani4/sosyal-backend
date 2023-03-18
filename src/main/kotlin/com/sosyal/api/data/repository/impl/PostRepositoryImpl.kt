@@ -21,4 +21,6 @@ class PostRepositoryImpl(private val postService: PostService) : PostRepository 
         id = ObjectId(id).toId(),
         post = postDto.toPost()
     )
+
+    override fun deletePost(id: String) = postService.deletePost(ObjectId(id).toId())
 }
