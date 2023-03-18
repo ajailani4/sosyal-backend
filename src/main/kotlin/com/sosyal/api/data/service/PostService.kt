@@ -11,19 +11,19 @@ class PostService(client: MongoClient) {
     private val database = client.getDatabase(System.getenv("DB_NAME"))
     private val postCollection = database.getCollection<Post>("posts")
 
-    fun addPost(post: Post): Id<Post>? {
-        postCollection.insertOne(post)
+    fun addPost(post: Post): Boolean {
+        val result = postCollection.insertOne(post)
 
-        return post.id
+        return result.wasAcknowledged()
     }
 
     fun getAllPosts() = postCollection.find().toList()
 
     fun getPost(id: Id<Post>) = postCollection.findOneById(id)
 
-    fun editPost(id: Id<Post>, post: Post): Id<Post>? {
-        postCollection.updateOneById(id, post)
+    fun editPost(id: Id<Post>, post: Post): Boolean {
+        val result = postCollection.updateOneById(id, post)
 
-        return post.id
+        return result.wasAcknowledged()
     }
 }
