@@ -62,6 +62,25 @@ fun Route.configurePostRoutes(connections: MutableSet<Connection>) {
             }
         }
 
+        get("/posts/{id?}") {
+            val id = call.parameters["id"].toString()
+
+            val postDto = postRepository.getPost(id) ?: return@get call.respond(
+                status = HttpStatusCode.NotFound,
+                message = BaseResponse<JsonObject>(
+                    message = "Post is not found"
+                )
+            )
+
+            call.respond(
+                status = HttpStatusCode.OK,
+                message = BaseResponse(
+                    message = "Post has been retrieved successfully",
+                    data = postDto
+                )
+            )
+        }
+
         delete("/posts/{id?}") {
             val id = call.parameters["id"].toString()
 
