@@ -10,5 +10,6 @@ fun User.toUserDto() =
         name = name,
         email = email,
         avatar = avatar,
-        username = username
+        username = username,
+        password = password
     )
