@@ -1,6 +1,7 @@
 package com.sosyal.api.plugins
 
 import com.sosyal.api.routes.configureAuthRoutes
+import com.sosyal.api.routes.configureUserRoutes
 import io.ktor.server.application.*
 import io.ktor.server.routing.*
 
@@ -15,5 +16,6 @@ fun Application.configureRouting() {
             issuer = issuer,
             audience = audience
         )
+        configureUserRoutes()
     }
 }
