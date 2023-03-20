@@ -2,7 +2,6 @@ package com.sosyal.api.data.mapper
 
 import com.sosyal.api.data.dto.UserDto
 import com.sosyal.api.data.entity.User
-import org.litote.kmongo.util.idValue
 
 fun User.toUserDto() =
     UserDto(
@@ -12,12 +11,4 @@ fun User.toUserDto() =
         avatar = avatar,
         username = username,
         password = password
-    )
-
-fun UserDto.toUser() =
-    User(
-        name = name,
-        email = email,
-        avatar = avatar,
-        username = username
     )
