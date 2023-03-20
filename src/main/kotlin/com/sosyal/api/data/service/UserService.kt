@@ -2,9 +2,7 @@ package com.sosyal.api.data.service
 
 import com.mongodb.client.MongoClient
 import com.sosyal.api.data.entity.User
-import org.litote.kmongo.eq
-import org.litote.kmongo.findOne
-import org.litote.kmongo.getCollection
+import org.litote.kmongo.*
 
 class UserService(client: MongoClient) {
     private val database = client.getDatabase(System.getenv("DB_NAME"))
@@ -17,4 +15,10 @@ class UserService(client: MongoClient) {
     }
 
     fun getUser(username: String) = userCollection.findOne(User::username eq username)
+
+    fun editUser(username: String, user: User): Boolean {
+        val result = userCollection.updateOne(User::username eq username, user)
+
+        return result.wasAcknowledged()
+    }
 }
