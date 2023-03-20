@@ -16,8 +16,21 @@ class UserService(client: MongoClient) {
 
     fun getUser(username: String) = userCollection.findOne(User::username eq username)
 
-    fun editUser(username: String, user: User): Boolean {
-        val result = userCollection.updateOne(User::username eq username, user)
+    fun editUser(
+        username: String,
+        name: String,
+        email: String,
+        avatar: String? = null
+    ): Boolean {
+        val updateQuery = if (avatar != null) {
+            "{\$set: {name: '$name', email: '$email', avatar: '$avatar'}}"
+        } else {
+            "{\$set: {name: '$name', email: '$email'}}"
+        }
+        val result = userCollection.updateOne(
+            "{username: '$username'}",
+            updateQuery
+        )
 
         return result.wasAcknowledged()
     }
