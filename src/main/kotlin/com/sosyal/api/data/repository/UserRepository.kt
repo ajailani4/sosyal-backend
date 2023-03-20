@@ -7,4 +7,5 @@ import com.sosyal.api.data.dto.request.RegisterRequest
 interface UserRepository {
     fun addUser(registerRequest: RegisterRequest): Boolean
     fun getUser(username: String): UserDto?
+    fun editUser(username: String, userDto: UserDto): Boolean
 }
