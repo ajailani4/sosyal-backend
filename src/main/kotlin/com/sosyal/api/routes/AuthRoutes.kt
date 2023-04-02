@@ -92,7 +92,7 @@ fun Route.configureAuthRoutes(
         )
 
         call.respond(
-            status = HttpStatusCode.Created,
+            status = HttpStatusCode.OK,
             message = BaseResponse(
                 message = "Login account is success",
                 data = hashMapOf("accessToken" to token)
