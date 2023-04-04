@@ -9,7 +9,8 @@ fun Post.toPostDto() =
         id = id.toString(),
         username = username,
         content = content,
-        like = like,
+        likes = likes,
+        comments = comments,
         date = date
     )
 
@@ -17,6 +18,7 @@ fun PostDto.toPost() =
     Post(
         username = username,
         content = content,
-        like = like,
+        likes = likes,
+        comments = comments,
         date = date
     )

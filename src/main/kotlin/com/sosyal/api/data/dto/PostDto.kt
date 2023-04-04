@@ -6,7 +6,9 @@ import kotlinx.serialization.Serializable
 data class PostDto(
     val id: String? = null,
     val username: String,
+    val userAvatar: String? = null,
     val content: String,
-    val like: Int,
+    val likes: Int,
+    val comments: Int,
     val date: String
 )
