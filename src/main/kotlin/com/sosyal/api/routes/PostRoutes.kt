@@ -55,10 +55,11 @@ fun Route.configurePostRoutes(connections: MutableSet<Connection>) {
                         conn.session.send(Json.encodeToString(postDto.copy(id = id)))
                     }
                 }
-
-
             } catch (e: Exception) {
                 println(e.localizedMessage)
+            } finally {
+                println("Remove $connection")
+                connections -= connection
             }
         }
 
