@@ -5,13 +5,20 @@ import com.sosyal.api.data.mapper.toPost
 import com.sosyal.api.data.mapper.toPostDto
 import com.sosyal.api.data.repository.PostRepository
 import com.sosyal.api.data.service.PostService
+import com.sosyal.api.data.service.UserService
 import org.bson.types.ObjectId
 import org.litote.kmongo.id.toId
 
-class PostRepositoryImpl(private val postService: PostService) : PostRepository {
+class PostRepositoryImpl(
+    private val postService: PostService,
+    private val userService: UserService
+    ) : PostRepository {
     override fun addPost(postDto: PostDto) = postService.addPost(postDto.toPost()).toString()
 
-    override fun getAllPosts() = postService.getAllPosts().map { post -> post.toPostDto() }
+    override fun getAllPosts() = postService.getAllPosts().map { post ->
+        val userDto = userService.getUser(post.username)
+        post.toPostDto(userDto?.avatar)
+    }
 
     override fun getPost(id: String) = postService.getPost(ObjectId(id).toId())?.toPostDto()
 

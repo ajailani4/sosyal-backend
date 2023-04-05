@@ -14,5 +14,5 @@ val appModule = module {
     single { UserService(get()) }
     single { PostService(get()) }
     single<UserRepository> { UserRepositoryImpl(get()) }
-    single<PostRepository> { PostRepositoryImpl(get()) }
+    single<PostRepository> { PostRepositoryImpl(get(), get()) }
 }
