@@ -3,6 +3,7 @@ package com.sosyal.api.routes
 import com.sosyal.api.data.dto.PostDto
 import com.sosyal.api.data.dto.response.BaseResponse
 import com.sosyal.api.data.repository.PostRepository
+import com.sosyal.api.data.repository.UserRepository
 import com.sosyal.api.util.Connection
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -20,6 +21,7 @@ import org.koin.ktor.ext.inject
 
 fun Route.configurePostRoutes(connections: MutableSet<Connection>) {
     val postRepository by inject<PostRepository>()
+    val userRepository by inject<UserRepository>()
 
     authenticate("auth-jwt") {
         webSocket("/post") {
@@ -40,7 +42,9 @@ fun Route.configurePostRoutes(connections: MutableSet<Connection>) {
                 for (frame in incoming) {
                     frame as? Frame.Text ?: continue
                     val postDtoText = frame.readText()
-                    val postDto = Json.decodeFromString<PostDto>(postDtoText)
+                    var postDto = Json.decodeFromString<PostDto>(postDtoText)
+                    val userDto = userRepository.getUser(postDto.username)
+                    postDto = postDto.copy(userAvatar = userDto?.avatar)
 
                     val id = if (postEdit == "true") {
                         postRepository.editPost(
