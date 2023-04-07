@@ -55,7 +55,10 @@ fun Route.configureAuthRoutes(
             status = HttpStatusCode.Created,
             message = BaseResponse(
                 message = "Register account is success",
-                data = hashMapOf("accessToken" to token)
+                data = hashMapOf(
+                    "accessToken" to token,
+                    "username" to registerRequest.username
+                )
             )
         )
     }
@@ -95,7 +98,10 @@ fun Route.configureAuthRoutes(
             status = HttpStatusCode.OK,
             message = BaseResponse(
                 message = "Login account is success",
-                data = hashMapOf("accessToken" to token)
+                data = hashMapOf(
+                    "accessToken" to token,
+                    "username" to loginRequest.username
+                )
             )
         )
     }
