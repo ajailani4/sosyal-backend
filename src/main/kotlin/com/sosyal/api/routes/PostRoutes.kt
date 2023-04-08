@@ -26,7 +26,6 @@ fun Route.configurePostRoutes(connections: MutableSet<Connection>) {
     authenticate("auth-jwt") {
         webSocket("/post") {
             val principal = call.principal<JWTPrincipal>()
-            val postEdit = call.request.queryParameters["postEdit"]
             val username = principal!!.payload.getClaim("username").asString()
             val connection = Connection(
                 session = this,
@@ -46,7 +45,7 @@ fun Route.configurePostRoutes(connections: MutableSet<Connection>) {
                     val userDto = userRepository.getUser(postDto.username)
                     postDto = postDto.copy(userAvatar = userDto?.avatar)
 
-                    val id = if (postEdit == "true") {
+                    val id = if (postDto.isEdited == true) {
                         postRepository.editPost(
                             id = postDto.id!!,
                             postDto = postDto
