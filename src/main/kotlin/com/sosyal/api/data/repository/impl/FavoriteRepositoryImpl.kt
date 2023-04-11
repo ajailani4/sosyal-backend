@@ -13,4 +13,7 @@ class FavoriteRepositoryImpl(
 
     override fun isPostFavorite(username: String, postId: String) =
         favoriteService.isPostFavorite(username = username, postId = postId)
+
+    override fun getFavoriteByPostId(postId: String) =
+        favoriteService.getFavoriteByPostId(postId)
 }

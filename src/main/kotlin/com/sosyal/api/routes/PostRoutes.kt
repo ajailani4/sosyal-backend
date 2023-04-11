@@ -43,7 +43,14 @@ fun Route.configurePostRoutes(connections: MutableSet<Connection>) {
                         postId = postDto.id!!
                     )
 
-                    connection.session.send(Json.encodeToString(postDto.copy(isLiked = isLiked)))
+                    connection.session.send(
+                        Json.encodeToString(
+                            postDto.copy(
+                                likes = favoriteRepository.getFavoriteByPostId(postDto.id),
+                                isLiked = isLiked
+                            )
+                        )
+                    )
                 }
 
                 for (frame in incoming) {
@@ -73,7 +80,12 @@ fun Route.configurePostRoutes(connections: MutableSet<Connection>) {
 
                     connections.forEach { conn ->
                         conn.session.send(
-                            Json.encodeToString(postDto.copy(id = id))
+                            Json.encodeToString(
+                                postDto.copy(
+                                    id = id,
+                                    likes = favoriteRepository.getFavoriteByPostId(postDto.id!!)
+                                )
+                            )
                         )
                     }
                 }

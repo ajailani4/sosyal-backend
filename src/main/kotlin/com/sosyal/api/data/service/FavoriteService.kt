@@ -27,4 +27,10 @@ class FavoriteService(client: MongoClient) {
 
         return result != null
     }
+
+    fun getFavoriteByPostId(postId: String): Int {
+        val result = favoritesCollection.find(Favorite::postId eq ObjectId(postId).toId())
+
+        return result.toList().size
+    }
 }
