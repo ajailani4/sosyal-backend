@@ -61,7 +61,11 @@ fun Route.configurePostRoutes(connections: MutableSet<Connection>) {
                     postDto = postDto.copy(userAvatar = userDto?.avatar)
 
                     val id = if (postDto.isEdited == true) {
-                        if (postDto.isLiked == true) {
+                        if (postDto.isLiked == true && !favoriteRepository.isPostFavorite(
+                                username = postDto.username,
+                                postId = postDto.id!!
+                            )
+                        ) {
                             favoriteRepository.addFavorite(
                                 FavoriteDto(
                                     username = username,
