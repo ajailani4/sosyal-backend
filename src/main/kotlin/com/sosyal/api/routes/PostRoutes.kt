@@ -1,7 +1,9 @@
 package com.sosyal.api.routes
 
+import com.sosyal.api.data.dto.FavoriteDto
 import com.sosyal.api.data.dto.PostDto
 import com.sosyal.api.data.dto.response.BaseResponse
+import com.sosyal.api.data.repository.FavoriteRepository
 import com.sosyal.api.data.repository.PostRepository
 import com.sosyal.api.data.repository.UserRepository
 import com.sosyal.api.util.Connection
@@ -22,6 +24,7 @@ import org.koin.ktor.ext.inject
 fun Route.configurePostRoutes(connections: MutableSet<Connection>) {
     val postRepository by inject<PostRepository>()
     val userRepository by inject<UserRepository>()
+    val favoriteRepository by inject<FavoriteRepository>()
 
     authenticate("auth-jwt") {
         webSocket("/post") {
@@ -35,7 +38,12 @@ fun Route.configurePostRoutes(connections: MutableSet<Connection>) {
 
             try {
                 postRepository.getAllPosts().forEach { postDto ->
-                    connection.session.send(Json.encodeToString(postDto))
+                    val isLiked = favoriteRepository.isPostFavorite(
+                        username = username,
+                        postId = postDto.id!!
+                    )
+
+                    connection.session.send(Json.encodeToString(postDto.copy(isLiked = isLiked)))
                 }
 
                 for (frame in incoming) {
@@ -46,6 +54,15 @@ fun Route.configurePostRoutes(connections: MutableSet<Connection>) {
                     postDto = postDto.copy(userAvatar = userDto?.avatar)
 
                     val id = if (postDto.isEdited == true) {
+                        if (postDto.isLiked == true) {
+                            favoriteRepository.addFavorite(
+                                FavoriteDto(
+                                    username = username,
+                                    postId = postDto.id!!
+                                )
+                            )
+                        }
+
                         postRepository.editPost(
                             id = postDto.id!!,
                             postDto = postDto
@@ -55,7 +72,9 @@ fun Route.configurePostRoutes(connections: MutableSet<Connection>) {
                     }
 
                     connections.forEach { conn ->
-                        conn.session.send(Json.encodeToString(postDto.copy(id = id)))
+                        conn.session.send(
+                            Json.encodeToString(postDto.copy(id = id))
+                        )
                     }
                 }
             } catch (e: Exception) {
