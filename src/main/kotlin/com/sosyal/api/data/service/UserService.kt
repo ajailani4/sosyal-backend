@@ -6,15 +6,15 @@ import org.litote.kmongo.*
 
 class UserService(client: MongoClient) {
     private val database = client.getDatabase(System.getenv("DB_NAME"))
-    private val userCollection = database.getCollection<User>("users")
+    private val usersCollection = database.getCollection<User>("users")
 
     fun addUser(user: User): Boolean {
-        val result = userCollection.insertOne(user)
+        val result = usersCollection.insertOne(user)
 
         return result.wasAcknowledged()
     }
 
-    fun getUser(username: String) = userCollection.findOne(User::username eq username)
+    fun getUser(username: String) = usersCollection.findOne(User::username eq username)
 
     fun editUser(
         username: String,
@@ -27,7 +27,7 @@ class UserService(client: MongoClient) {
         } else {
             "{\$set: {name: '$name', email: '$email'}}"
         }
-        val result = userCollection.updateOne(
+        val result = usersCollection.updateOne(
             "{username: '$username'}",
             updateQuery
         )
