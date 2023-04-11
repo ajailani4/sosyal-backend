@@ -12,7 +12,7 @@ import org.litote.kmongo.id.toId
 class PostRepositoryImpl(
     private val postService: PostService,
     private val userService: UserService
-    ) : PostRepository {
+) : PostRepository {
     override fun addPost(postDto: PostDto) = postService.addPost(postDto.toPost()).toString()
 
     override fun getAllPosts() = postService.getAllPosts().map { post ->
