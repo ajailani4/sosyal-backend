@@ -38,7 +38,7 @@ fun Route.configureUserRoutes() {
                 )
             }
 
-            put("{id?}") {
+            post {
                 val principal = call.principal<JWTPrincipal>()
                 val username = principal!!.payload.getClaim("username").asString()
                 val multipartData = call.receiveMultipart()
@@ -79,7 +79,7 @@ fun Route.configureUserRoutes() {
                 )
 
                 if (!result) {
-                    return@put call.respond(
+                    return@post call.respond(
                         status = HttpStatusCode.BadRequest,
                         message = BaseResponse<JsonObject>(
                             message = "Cannot edit the profile"
