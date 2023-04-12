@@ -61,8 +61,9 @@ fun Route.configurePostRoutes(connections: MutableSet<Connection>) {
                     postDto = postDto.copy(userAvatar = userDto?.avatar)
 
                     val id = if (postDto.isEdited == true) {
-                        if (postDto.isLiked == true && !favoriteRepository.isPostFavorite(
-                                username = postDto.username,
+                        if (postDto.isLiked == true &&
+                            !favoriteRepository.isPostFavorite(
+                                username = username,
                                 postId = postDto.id!!
                             )
                         ) {
@@ -74,23 +75,30 @@ fun Route.configurePostRoutes(connections: MutableSet<Connection>) {
                             )
                         }
 
+                        if (postDto.isLiked == false &&
+                            favoriteRepository.isPostFavorite(
+                                username = username,
+                                postId = postDto.id!!
+                            )
+                        ) {
+                            favoriteRepository.deleteFavorite(
+                                username = username,
+                                postId = postDto.id!!
+                            )
+                        }
+
+                        postDto = postDto.copy(likes = favoriteRepository.getFavoriteByPostId(postDto.id!!))
                         postRepository.editPost(
                             id = postDto.id!!,
                             postDto = postDto
                         )
                     } else {
+                        postDto = postDto.copy(isLiked = false)
                         postRepository.addPost(postDto)
                     }
 
                     connections.forEach { conn ->
-                        conn.session.send(
-                            Json.encodeToString(
-                                postDto.copy(
-                                    id = id,
-                                    likes = favoriteRepository.getFavoriteByPostId(postDto.id!!)
-                                )
-                            )
-                        )
+                        conn.session.send(Json.encodeToString(postDto.copy(id = id)))
                     }
                 }
             } catch (e: Exception) {

@@ -11,6 +11,9 @@ class FavoriteRepositoryImpl(
     override fun addFavorite(favoriteDto: FavoriteDto) =
         favoriteService.addFavorite(favoriteDto.toFavorite()).toString()
 
+    override fun deleteFavorite(username: String, postId: String) =
+        favoriteService.deleteFavorite(username = username, postId = postId)
+
     override fun isPostFavorite(username: String, postId: String) =
         favoriteService.isPostFavorite(username = username, postId = postId)
 

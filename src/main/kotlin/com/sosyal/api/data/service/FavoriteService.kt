@@ -3,10 +3,7 @@ package com.sosyal.api.data.service
 import com.mongodb.client.MongoClient
 import com.sosyal.api.data.entity.Favorite
 import org.bson.types.ObjectId
-import org.litote.kmongo.Id
-import org.litote.kmongo.eq
-import org.litote.kmongo.findOne
-import org.litote.kmongo.getCollection
+import org.litote.kmongo.*
 import org.litote.kmongo.id.toId
 
 class FavoriteService(client: MongoClient) {
@@ -17,6 +14,15 @@ class FavoriteService(client: MongoClient) {
         val result = favoritesCollection.insertOne(favorite)
 
         return if (result.wasAcknowledged()) favorite.id else null
+    }
+
+    fun deleteFavorite(username: String, postId: String): Boolean {
+        val result = favoritesCollection.deleteOne(
+            Favorite::username eq username,
+            Favorite::postId eq ObjectId(postId).toId()
+        )
+
+        return result.wasAcknowledged()
     }
 
     fun isPostFavorite(username: String, postId: String): Boolean {
