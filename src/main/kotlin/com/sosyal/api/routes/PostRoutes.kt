@@ -110,6 +110,8 @@ fun Route.configurePostRoutes(connections: MutableSet<Connection>) {
         }
 
         get("/posts/{id?}") {
+            val principal = call.principal<JWTPrincipal>()
+            val username = principal!!.payload.getClaim("username").asString()
             val id = call.parameters["id"].toString()
 
             val postDto = postRepository.getPost(id) ?: return@get call.respond(
@@ -123,7 +125,12 @@ fun Route.configurePostRoutes(connections: MutableSet<Connection>) {
                 status = HttpStatusCode.OK,
                 message = BaseResponse(
                     message = "Post has been retrieved successfully",
-                    data = postDto
+                    data = postDto.copy(
+                        isLiked = favoriteRepository.isPostFavorite(
+                            username = username,
+                            postId = postDto.id!!
+                        )
+                    )
                 )
             )
         }
