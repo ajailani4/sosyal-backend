@@ -7,5 +7,7 @@ data class Comment(
     @BsonId
     val id: Id<Comment>? = null,
     val postId: Id<Post>,
+    val username: String,
+    val userAvatar: String? = null,
     val content: String
 )
