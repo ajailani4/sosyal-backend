@@ -10,3 +10,10 @@ fun CommentDto.toComment() =
         postId = ObjectId(postId).toId(),
         content = content
     )
+
+fun Comment.toCommentDto() =
+    CommentDto(
+        id = id.toString(),
+        postId = postId.toString(),
+        content = content
+    )

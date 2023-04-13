@@ -2,7 +2,9 @@ package com.sosyal.api.data.service
 
 import com.mongodb.client.MongoClient
 import com.sosyal.api.data.entity.Comment
+import com.sosyal.api.data.entity.Post
 import org.litote.kmongo.Id
+import org.litote.kmongo.eq
 import org.litote.kmongo.getCollection
 
 class CommentService(client: MongoClient) {
@@ -14,4 +16,7 @@ class CommentService(client: MongoClient) {
 
         return if (result.wasAcknowledged()) comment.id else null
     }
+
+    fun getCommentsByPostId(postId: Id<Post>) =
+        commentsCollection.find(Comment::postId eq postId).toList()
 }
