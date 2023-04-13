@@ -8,6 +8,8 @@ import org.litote.kmongo.id.toId
 fun CommentDto.toComment() =
     Comment(
         postId = ObjectId(postId).toId(),
+        username = username,
+        userAvatar = userAvatar,
         content = content
     )
 
@@ -15,5 +17,7 @@ fun Comment.toCommentDto() =
     CommentDto(
         id = id.toString(),
         postId = postId.toString(),
+        username = username,
+        userAvatar = userAvatar,
         content = content
     )
