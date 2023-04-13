@@ -1,9 +1,8 @@
 package com.sosyal.api.plugins
 
 import com.sosyal.api.routes.configurePostRoutes
-import com.sosyal.api.util.Connection
+import com.sosyal.api.util.PostConnection
 import io.ktor.server.websocket.*
-import io.ktor.websocket.*
 import java.time.Duration
 import io.ktor.server.application.*
 import io.ktor.server.routing.*
@@ -18,8 +17,8 @@ fun Application.configureSockets() {
     }
 
     routing {
-        val connections = Collections.synchronizedSet<Connection?>(LinkedHashSet())
+        val postConnections = Collections.synchronizedSet<PostConnection?>(LinkedHashSet())
 
-        configurePostRoutes(connections)
+        configurePostRoutes(postConnections)
     }
 }

@@ -2,7 +2,7 @@ package com.sosyal.api.util
 
 import io.ktor.websocket.*
 
-data class Connection(
+data class PostConnection(
     val session: DefaultWebSocketSession,
     val username: String
 )

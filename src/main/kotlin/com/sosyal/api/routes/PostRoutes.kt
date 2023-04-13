@@ -6,7 +6,7 @@ import com.sosyal.api.data.dto.response.BaseResponse
 import com.sosyal.api.data.repository.FavoriteRepository
 import com.sosyal.api.data.repository.PostRepository
 import com.sosyal.api.data.repository.UserRepository
-import com.sosyal.api.util.Connection
+import com.sosyal.api.util.PostConnection
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
@@ -21,7 +21,7 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import org.koin.ktor.ext.inject
 
-fun Route.configurePostRoutes(connections: MutableSet<Connection>) {
+fun Route.configurePostRoutes(postConnections: MutableSet<PostConnection>) {
     val postRepository by inject<PostRepository>()
     val userRepository by inject<UserRepository>()
     val favoriteRepository by inject<FavoriteRepository>()
@@ -30,11 +30,11 @@ fun Route.configurePostRoutes(connections: MutableSet<Connection>) {
         webSocket("/post") {
             val principal = call.principal<JWTPrincipal>()
             val username = principal!!.payload.getClaim("username").asString()
-            val connection = Connection(
+            val postConnection = PostConnection(
                 session = this,
                 username = username
             )
-            connections += connection
+            postConnections += postConnection
 
             try {
                 postRepository.getAllPosts().forEach { postDto ->
@@ -43,7 +43,7 @@ fun Route.configurePostRoutes(connections: MutableSet<Connection>) {
                         postId = postDto.id!!
                     )
 
-                    connection.session.send(
+                    postConnection.session.send(
                         Json.encodeToString(
                             postDto.copy(
                                 likes = favoriteRepository.getFavoriteByPostId(postDto.id),
@@ -97,15 +97,15 @@ fun Route.configurePostRoutes(connections: MutableSet<Connection>) {
                         postRepository.addPost(postDto)
                     }
 
-                    connections.forEach { conn ->
+                    postConnections.forEach { conn ->
                         conn.session.send(Json.encodeToString(postDto.copy(id = id)))
                     }
                 }
             } catch (e: Exception) {
                 println(e.localizedMessage)
             } finally {
-                println("Remove $connection")
-                connections -= connection
+                println("Remove $postConnection")
+                postConnections -= postConnection
             }
         }
 
