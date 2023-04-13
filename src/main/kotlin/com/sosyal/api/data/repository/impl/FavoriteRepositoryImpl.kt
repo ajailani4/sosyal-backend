@@ -7,7 +7,7 @@ import com.sosyal.api.data.service.FavoriteService
 
 class FavoriteRepositoryImpl(
     private val favoriteService: FavoriteService
-    ) : FavoriteRepository {
+) : FavoriteRepository {
     override fun addFavorite(favoriteDto: FavoriteDto) =
         favoriteService.addFavorite(favoriteDto.toFavorite()).toString()
 
