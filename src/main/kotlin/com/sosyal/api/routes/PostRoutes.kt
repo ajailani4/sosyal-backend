@@ -37,17 +37,33 @@ fun Route.configurePostRoutes(postConnections: MutableSet<PostConnection>) {
             postConnections += postConnection
 
             try {
-                postRepository.getAllPosts().forEach { postDto ->
-                    val isLiked = favoriteRepository.isPostFavorite(
-                        username = username,
-                        postId = postDto.id!!
-                    )
+                val posts = postRepository.getAllPosts()
 
+                if (posts.isNotEmpty()) {
+                    posts.forEach { postDto ->
+                        val isLiked = favoriteRepository.isPostFavorite(
+                            username = username,
+                            postId = postDto.id!!
+                        )
+
+                        postConnection.session.send(
+                            Json.encodeToString(
+                                postDto.copy(
+                                    likes = favoriteRepository.getFavoriteByPostId(postDto.id),
+                                    isLiked = isLiked
+                                )
+                            )
+                        )
+                    }
+                } else {
                     postConnection.session.send(
                         Json.encodeToString(
-                            postDto.copy(
-                                likes = favoriteRepository.getFavoriteByPostId(postDto.id),
-                                isLiked = isLiked
+                            PostDto(
+                                username = "",
+                                content = "",
+                                likes = 0,
+                                comments = 0,
+                                date = ""
                             )
                         )
                     )

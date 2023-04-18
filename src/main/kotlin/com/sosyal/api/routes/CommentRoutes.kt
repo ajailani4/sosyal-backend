@@ -1,6 +1,7 @@
 package com.sosyal.api.routes
 
 import com.sosyal.api.data.dto.CommentDto
+import com.sosyal.api.data.dto.response.BaseResponse
 import com.sosyal.api.data.repository.CommentRepository
 import com.sosyal.api.data.repository.UserRepository
 import com.sosyal.api.util.CommentConnection
@@ -12,6 +13,7 @@ import io.ktor.websocket.*
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonObject
 import org.koin.ktor.ext.inject
 
 fun Route.configureCommentRoutes(commentConnections: MutableSet<CommentConnection>) {
@@ -31,8 +33,22 @@ fun Route.configureCommentRoutes(commentConnections: MutableSet<CommentConnectio
             commentConnections += commentConnection
 
             try {
-                commentRepository.getCommentsByPostId(postId).forEach { commentDto ->
-                    commentConnection.session.send(Json.encodeToString(commentDto))
+                val comments = commentRepository.getCommentsByPostId(postId)
+
+                if (comments.isNotEmpty()) {
+                    comments.forEach { commentDto ->
+                        commentConnection.session.send(Json.encodeToString(commentDto))
+                    }
+                } else {
+                    commentConnection.session.send(
+                        Json.encodeToString(
+                            CommentDto(
+                                postId = "",
+                                username = "",
+                                content = ""
+                            )
+                        )
+                    )
                 }
 
                 for (frame in incoming) {
