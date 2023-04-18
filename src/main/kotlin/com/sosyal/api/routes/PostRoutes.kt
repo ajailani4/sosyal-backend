@@ -120,12 +120,14 @@ fun Route.configurePostRoutes(postConnections: MutableSet<PostConnection>) {
                     message = "Post is not found"
                 )
             )
+            val userDto = userRepository.getUser(postDto.username)
 
             call.respond(
                 status = HttpStatusCode.OK,
                 message = BaseResponse(
                     message = "Post has been retrieved successfully",
                     data = postDto.copy(
+                        userAvatar = userDto?.avatar,
                         isLiked = favoriteRepository.isPostFavorite(
                             username = username,
                             postId = postDto.id!!
