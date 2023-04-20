@@ -3,6 +3,7 @@ package com.sosyal.api.routes
 import com.sosyal.api.data.dto.FavoriteDto
 import com.sosyal.api.data.dto.PostDto
 import com.sosyal.api.data.dto.response.BaseResponse
+import com.sosyal.api.data.repository.CommentRepository
 import com.sosyal.api.data.repository.FavoriteRepository
 import com.sosyal.api.data.repository.PostRepository
 import com.sosyal.api.data.repository.UserRepository
@@ -23,6 +24,7 @@ import org.koin.ktor.ext.inject
 
 fun Route.configurePostRoutes(postConnections: MutableSet<PostConnection>) {
     val postRepository by inject<PostRepository>()
+    val commentRepository by inject<CommentRepository>()
     val userRepository by inject<UserRepository>()
     val favoriteRepository by inject<FavoriteRepository>()
 
@@ -50,6 +52,7 @@ fun Route.configurePostRoutes(postConnections: MutableSet<PostConnection>) {
                             Json.encodeToString(
                                 postDto.copy(
                                     likes = favoriteRepository.getFavoriteByPostId(postDto.id),
+                                    comments = commentRepository.getCommentsByPostId(postDto.id).size,
                                     isLiked = isLiked
                                 )
                             )
