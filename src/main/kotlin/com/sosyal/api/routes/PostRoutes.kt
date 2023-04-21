@@ -51,7 +51,7 @@ fun Route.configurePostRoutes(postConnections: MutableSet<PostConnection>) {
                         postConnection.session.send(
                             Json.encodeToString(
                                 postDto.copy(
-                                    likes = favoriteRepository.getFavoriteByPostId(postDto.id),
+                                    likes = favoriteRepository.getFavoritesByPostId(postDto.id).size,
                                     comments = commentRepository.getCommentsByPostId(postDto.id).size,
                                     isLiked = isLiked
                                 )
@@ -106,7 +106,7 @@ fun Route.configurePostRoutes(postConnections: MutableSet<PostConnection>) {
                             )
                         }
 
-                        postDto = postDto.copy(likes = favoriteRepository.getFavoriteByPostId(postDto.id!!))
+                        postDto = postDto.copy(likes = favoriteRepository.getFavoritesByPostId(postDto.id!!).size)
                         postRepository.editPost(
                             id = postDto.id!!,
                             postDto = postDto

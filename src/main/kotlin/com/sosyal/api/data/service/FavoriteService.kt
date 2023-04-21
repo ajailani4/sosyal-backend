@@ -3,9 +3,7 @@ package com.sosyal.api.data.service
 import com.mongodb.client.MongoClient
 import com.sosyal.api.data.entity.Favorite
 import com.sosyal.api.data.entity.Post
-import org.bson.types.ObjectId
 import org.litote.kmongo.*
-import org.litote.kmongo.id.toId
 
 class FavoriteService(client: MongoClient) {
     private val database = client.getDatabase(System.getenv("DB_NAME"))
@@ -35,9 +33,6 @@ class FavoriteService(client: MongoClient) {
         return result != null
     }
 
-    fun getFavoriteByPostId(postId: Id<Post>): Int {
-        val result = favoritesCollection.find(Favorite::postId eq postId)
-
-        return result.toList().size
-    }
+    fun getFavoritesByPostId(postId: Id<Post>) =
+        favoritesCollection.find(Favorite::postId eq postId).toList()
 }

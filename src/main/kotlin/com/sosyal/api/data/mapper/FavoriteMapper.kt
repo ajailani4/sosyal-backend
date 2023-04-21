@@ -11,3 +11,10 @@ fun FavoriteDto.toFavorite() =
         username = username,
         postId = ObjectId(postId).toId()
     )
+
+fun Favorite.toFavoriteDto() =
+    FavoriteDto(
+        id = id.toString(),
+        username = username,
+        postId = postId.toString()
+    )

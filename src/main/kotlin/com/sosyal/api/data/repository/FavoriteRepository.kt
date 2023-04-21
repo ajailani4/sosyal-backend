@@ -6,5 +6,5 @@ interface FavoriteRepository {
     fun addFavorite(favoriteDto: FavoriteDto): String
     fun deleteFavorite(username: String, postId: String): Boolean
     fun isPostFavorite(username: String, postId: String): Boolean
-    fun getFavoriteByPostId(postId: String): Int
+    fun getFavoritesByPostId(postId: String): List<FavoriteDto>
 }
