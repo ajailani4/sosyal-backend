@@ -6,22 +6,21 @@ import com.sosyal.api.data.mapper.toFavoriteDto
 import com.sosyal.api.data.repository.FavoriteRepository
 import com.sosyal.api.data.service.FavoriteService
 import org.bson.types.ObjectId
-import org.litote.kmongo.id.toId
 
 class FavoriteRepositoryImpl(
     private val favoriteService: FavoriteService
 ) : FavoriteRepository {
-    override fun addFavorite(favoriteDto: FavoriteDto) =
+    override suspend fun addFavorite(favoriteDto: FavoriteDto) =
         favoriteService.addFavorite(favoriteDto.toFavorite()).toString()
 
-    override fun deleteFavorite(username: String, postId: String) =
-        favoriteService.deleteFavorite(username = username, postId = ObjectId(postId).toId())
+    override suspend fun deleteFavorite(username: String, postId: String) =
+        favoriteService.deleteFavorite(username = username, postId = ObjectId(postId))
 
-    override fun isPostFavorite(username: String, postId: String) =
-        favoriteService.isPostFavorite(username = username, postId = ObjectId(postId).toId())
+    override suspend fun isPostFavorite(username: String, postId: String) =
+        favoriteService.isPostFavorite(username = username, postId = ObjectId(postId))
 
-    override fun getFavoritesByPostId(postId: String): List<FavoriteDto> =
-        favoriteService.getFavoritesByPostId(ObjectId(postId).toId()).map { favorite ->
+    override suspend fun getFavoritesByPostId(postId: String): List<FavoriteDto> =
+        favoriteService.getFavoritesByPostId(ObjectId(postId)).map { favorite ->
             favorite.toFavoriteDto()
         }
 }

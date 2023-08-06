@@ -1,38 +1,38 @@
 package com.sosyal.api.data.service
 
-import com.mongodb.client.MongoClient
+import com.mongodb.client.model.Filters.and
+import com.mongodb.client.model.Filters.eq
+import com.mongodb.kotlin.client.coroutine.MongoDatabase
 import com.sosyal.api.data.entity.Favorite
-import com.sosyal.api.data.entity.Post
-import org.litote.kmongo.*
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.toList
+import org.bson.types.ObjectId
 
-class FavoriteService(client: MongoClient) {
-    private val database = client.getDatabase(System.getenv("DB_NAME"))
+class FavoriteService(database: MongoDatabase) {
     private val favoritesCollection = database.getCollection<Favorite>("favorites")
 
-    fun addFavorite(favorite: Favorite): Id<Favorite>? {
+    suspend fun addFavorite(favorite: Favorite): ObjectId? {
         val result = favoritesCollection.insertOne(favorite)
 
         return if (result.wasAcknowledged()) favorite.id else null
     }
 
-    fun deleteFavorite(username: String, postId: Id<Post>): Boolean {
+    suspend fun deleteFavorite(username: String, postId: ObjectId): Boolean {
         val result = favoritesCollection.deleteOne(
-            Favorite::username eq username,
-            Favorite::postId eq postId
+            and(eq("username", username), eq("postId", postId))
         )
 
         return result.wasAcknowledged()
     }
 
-    fun isPostFavorite(username: String, postId: Id<Post>): Boolean {
-        val result = favoritesCollection.findOne(
-            Favorite::username eq username,
-            Favorite::postId eq postId
-        )
+    suspend fun isPostFavorite(username: String, postId: ObjectId): Boolean {
+        val result = favoritesCollection.find(
+            and(eq("username", username), eq("postId", postId))
+        ).firstOrNull()
 
         return result != null
     }
 
-    fun getFavoritesByPostId(postId: Id<Post>) =
-        favoritesCollection.find(Favorite::postId eq postId).toList()
+    suspend fun getFavoritesByPostId(postId: ObjectId) =
+        favoritesCollection.find(eq("postId", postId)).toList()
 }

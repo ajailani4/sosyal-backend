@@ -7,25 +7,24 @@ import com.sosyal.api.data.repository.PostRepository
 import com.sosyal.api.data.service.PostService
 import com.sosyal.api.data.service.UserService
 import org.bson.types.ObjectId
-import org.litote.kmongo.id.toId
 
 class PostRepositoryImpl(
     private val postService: PostService,
     private val userService: UserService
 ) : PostRepository {
-    override fun addPost(postDto: PostDto) = postService.addPost(postDto.toPost()).toString()
+    override suspend fun addPost(postDto: PostDto) = postService.addPost(postDto.toPost()).toString()
 
-    override fun getAllPosts() = postService.getAllPosts().map { post ->
+    override suspend fun getAllPosts() = postService.getAllPosts().map { post ->
         val userDto = userService.getUser(post.username)
         post.toPostDto(userDto?.avatar)
     }
 
-    override fun getPost(id: String) = postService.getPost(ObjectId(id).toId())?.toPostDto()
+    override suspend fun getPost(id: String) = postService.getPost(ObjectId(id))?.toPostDto()
 
-    override fun editPost(id: String, postDto: PostDto) = postService.editPost(
-        id = ObjectId(id).toId(),
+    override suspend fun editPost(id: String, postDto: PostDto) = postService.editPost(
+        id = ObjectId(id),
         post = postDto.toPost()
     ).toString()
 
-    override fun deletePost(id: String) = postService.deletePost(ObjectId(id).toId())
+    override suspend fun deletePost(id: String) = postService.deletePost(ObjectId(id))
 }

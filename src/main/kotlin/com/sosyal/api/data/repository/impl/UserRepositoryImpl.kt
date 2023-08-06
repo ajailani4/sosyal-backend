@@ -8,7 +8,7 @@ import com.sosyal.api.data.repository.UserRepository
 import com.sosyal.api.data.service.UserService
 
 class UserRepositoryImpl(private val userService: UserService) : UserRepository {
-    override fun addUser(registerRequest: RegisterRequest): Boolean {
+    override suspend fun addUser(registerRequest: RegisterRequest): Boolean {
         val hashedPassword = BCrypt.withDefaults().hashToString(10, registerRequest.password.toCharArray())
 
         return userService.addUser(
@@ -21,9 +21,9 @@ class UserRepositoryImpl(private val userService: UserService) : UserRepository 
         )
     }
 
-    override fun getUser(username: String) = userService.getUser(username)?.toUserDto()
+    override suspend fun getUser(username: String) = userService.getUser(username)?.toUserDto()
 
-    override fun editUser(
+    override suspend fun editUser(
         username: String,
         name: String,
         email: String,

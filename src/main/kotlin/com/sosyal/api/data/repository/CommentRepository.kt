@@ -4,6 +4,6 @@ import com.sosyal.api.data.dto.CommentDto
 import javax.xml.stream.events.Comment
 
 interface CommentRepository {
-    fun addComment(commentDto: CommentDto): String
-    fun getCommentsByPostId(postId: String): List<CommentDto>
+    suspend fun addComment(commentDto: CommentDto): String
+    suspend fun getCommentsByPostId(postId: String): List<CommentDto>
 }

@@ -1,31 +1,33 @@
 package com.sosyal.api.data.service
 
-import com.mongodb.client.MongoClient
+import com.mongodb.client.model.Filters.eq
+import com.mongodb.kotlin.client.coroutine.MongoDatabase
 import com.sosyal.api.data.entity.Post
-import org.litote.kmongo.*
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.toList
+import org.bson.types.ObjectId
 
-class PostService(client: MongoClient) {
-    private val database = client.getDatabase(System.getenv("DB_NAME"))
+class PostService(database: MongoDatabase) {
     private val postsCollection = database.getCollection<Post>("posts")
 
-    fun addPost(post: Post): Id<Post>? {
+    suspend fun addPost(post: Post): ObjectId? {
         val result = postsCollection.insertOne(post)
 
         return if (result.wasAcknowledged()) post.id else null
     }
 
-    fun getAllPosts() = postsCollection.find().toList()
+    suspend fun getAllPosts() = postsCollection.find().toList()
 
-    fun getPost(id: Id<Post>) = postsCollection.findOneById(id)
+    suspend fun getPost(id: ObjectId): Post? = postsCollection.find(eq("_id", id)).firstOrNull()
 
-    fun editPost(id: Id<Post>, post: Post): Id<Post>? {
-        val result = postsCollection.updateOneById(id, post)
+    suspend fun editPost(id: ObjectId, post: Post): ObjectId? {
+        val result = postsCollection.replaceOne(eq("_id", id), post)
 
         return if (result.wasAcknowledged()) id else null
     }
 
-    fun deletePost(id: Id<Post>): Boolean {
-        val result = postsCollection.deleteOneById(id)
+    suspend fun deletePost(id: ObjectId): Boolean {
+        val result = postsCollection.deleteOne(eq("_id", id))
 
         return result.wasAcknowledged()
     }
