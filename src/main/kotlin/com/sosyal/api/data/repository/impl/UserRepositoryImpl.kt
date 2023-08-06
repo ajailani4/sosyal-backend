@@ -1,6 +1,7 @@
 package com.sosyal.api.data.repository.impl
 
 import at.favre.lib.crypto.bcrypt.BCrypt
+import com.sosyal.api.data.dto.UserDto
 import com.sosyal.api.data.dto.request.RegisterRequest
 import com.sosyal.api.data.entity.User
 import com.sosyal.api.data.mapper.toUserDto
@@ -22,6 +23,8 @@ class UserRepositoryImpl(private val userService: UserService) : UserRepository 
     }
 
     override suspend fun getUser(username: String) = userService.getUser(username)?.toUserDto()
+
+    override suspend fun getUsers() = userService.getUsers().map { it.toUserDto() }
 
     override suspend fun editUser(
         username: String,

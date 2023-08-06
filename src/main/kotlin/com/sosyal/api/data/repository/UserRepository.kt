@@ -9,6 +9,8 @@ interface UserRepository {
 
     suspend fun getUser(username: String): UserDto?
 
+    suspend fun getUsers(): List<UserDto>
+
     suspend fun editUser(
         username: String,
         name: String,
