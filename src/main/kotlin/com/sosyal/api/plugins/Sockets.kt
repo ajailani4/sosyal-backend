@@ -1,5 +1,6 @@
 package com.sosyal.api.plugins
 
+import com.sosyal.api.routes.configureChatRoutes
 import com.sosyal.api.routes.configureCommentRoutes
 import com.sosyal.api.routes.configurePostRoutes
 import com.sosyal.api.util.CommentConnection
@@ -24,5 +25,6 @@ fun Application.configureSockets() {
 
         configurePostRoutes(postConnections)
         configureCommentRoutes(commentConnections)
+        configureChatRoutes()
     }
 }

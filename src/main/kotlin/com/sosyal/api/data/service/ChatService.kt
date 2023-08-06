@@ -12,7 +12,7 @@ class ChatService(database: MongoDatabase) {
         val chats = chatsCollection.find().toList()
 
         chats.forEach {
-            isChatExists = it.participants === chat.participants
+            isChatExists = it.participants == chat.participants
 
             if (isChatExists) return@forEach
         }
