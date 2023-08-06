@@ -17,12 +17,12 @@ class ChatService(database: MongoDatabase) {
             if (isChatExists) return@forEach
         }
 
-        if (!isChatExists) {
-            val result = chatsCollection.insertOne(chat)
-
-            return result.wasAcknowledged()
+        if (isChatExists) {
+            return false
         }
 
-        return false
+        val result = chatsCollection.insertOne(chat)
+
+        return result.wasAcknowledged()
     }
 }
