@@ -5,6 +5,7 @@ import com.mongodb.client.model.Updates.set
 import com.mongodb.kotlin.client.coroutine.MongoDatabase
 import com.sosyal.api.data.entity.User
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.toList
 
 class UserService(database: MongoDatabase) {
     private val usersCollection = database.getCollection<User>("users")
@@ -17,6 +18,8 @@ class UserService(database: MongoDatabase) {
 
     suspend fun getUser(username: String): User? =
         usersCollection.find(eq("username", username)).firstOrNull()
+
+    suspend fun getUsers() = usersCollection.find().toList()
 
     suspend fun editUser(
         username: String,

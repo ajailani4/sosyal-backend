@@ -95,5 +95,19 @@ fun Route.configureUserRoutes() {
                 )
             }
         }
+
+        route("/users") {
+            get {
+                val users = userRepository.getUsers()
+
+                call.respond(
+                    status = HttpStatusCode.OK,
+                    message = BaseResponse(
+                        message = "User list has been retrieved successfully",
+                        data = users.map { it.copy(password = null) }
+                    )
+                )
+            }
+        }
     }
 }
