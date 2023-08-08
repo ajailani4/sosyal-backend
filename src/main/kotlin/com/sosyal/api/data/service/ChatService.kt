@@ -7,6 +7,12 @@ import kotlinx.coroutines.flow.toList
 class ChatService(database: MongoDatabase) {
     private val chatsCollection = database.getCollection<Chat>("chats")
 
+    suspend fun getChatsByUsername(username: String): List<Chat> {
+        val chats = chatsCollection.find().toList()
+
+        return chats.filter { it.participants.contains(username) }
+    }
+
     suspend fun createChat(chat: Chat): Boolean {
         var isChatExists = false
         val chats = chatsCollection.find().toList()
