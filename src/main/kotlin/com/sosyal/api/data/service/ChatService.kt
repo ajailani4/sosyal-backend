@@ -38,4 +38,10 @@ class ChatService(database: MongoDatabase) {
 
     suspend fun getMessagesByChatId(chatId: ObjectId) =
         messagesCollection.find(eq("chatId", chatId)).toList()
+
+    suspend fun addMessage(message: Message): ObjectId? {
+        val result = messagesCollection.insertOne(message)
+
+        return if (result.wasAcknowledged()) message.id else null
+    }
 }

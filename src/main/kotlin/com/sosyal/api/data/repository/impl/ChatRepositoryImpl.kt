@@ -5,6 +5,7 @@ import com.sosyal.api.data.dto.MessageDto
 import com.sosyal.api.data.entity.Chat
 import com.sosyal.api.data.mapper.toChat
 import com.sosyal.api.data.mapper.toChatDto
+import com.sosyal.api.data.mapper.toMessage
 import com.sosyal.api.data.mapper.toMessageDto
 import com.sosyal.api.data.repository.ChatRepository
 import com.sosyal.api.data.service.ChatService
@@ -21,4 +22,7 @@ class ChatRepositoryImpl(
 
     override suspend fun getMessagesByChatId(chatId: String) =
         chatService.getMessagesByChatId(ObjectId(chatId)).map { it.toMessageDto() }
+
+    override suspend fun addMessage(messageDto: MessageDto) =
+        chatService.addMessage(messageDto.toMessage()).toString()
 }

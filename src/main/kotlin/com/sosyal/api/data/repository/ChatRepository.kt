@@ -10,4 +10,6 @@ interface ChatRepository {
     suspend fun createChat(chatDto: ChatDto): Boolean
 
     suspend fun getMessagesByChatId(chatId: String): List<MessageDto>
+
+    suspend fun addMessage(messageDto: MessageDto): String
 }
