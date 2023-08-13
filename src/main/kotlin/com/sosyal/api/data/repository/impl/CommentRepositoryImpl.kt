@@ -14,7 +14,5 @@ class CommentRepositoryImpl(
         commentService.addComment(commentDto.toComment()).toString()
 
     override suspend fun getCommentsByPostId(postId: String) =
-        commentService.getCommentsByPostId(ObjectId(postId)).map { comment ->
-            comment.toCommentDto()
-        }
+        commentService.getCommentsByPostId(ObjectId(postId)).map { it.toCommentDto() }
 }
