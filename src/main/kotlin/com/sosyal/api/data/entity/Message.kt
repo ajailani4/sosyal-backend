@@ -6,5 +6,6 @@ import org.bson.types.ObjectId
 data class Message(
     @BsonId
     val id: ObjectId? = null,
+    val chatId: ObjectId,
     val content: String
 )
