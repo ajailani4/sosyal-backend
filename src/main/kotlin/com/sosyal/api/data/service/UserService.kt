@@ -1,6 +1,7 @@
 package com.sosyal.api.data.service
 
 import com.mongodb.client.model.Filters.eq
+import com.mongodb.client.model.Updates.combine
 import com.mongodb.client.model.Updates.set
 import com.mongodb.kotlin.client.coroutine.MongoDatabase
 import com.sosyal.api.data.entity.User
@@ -27,18 +28,22 @@ class UserService(database: MongoDatabase) {
         email: String,
         avatar: String? = null
     ): Boolean {
-        val updateFilter = if (avatar != null) {
-            set("name", name)
-            set("email", email)
-            set("avatar", avatar)
+        val updateOperation = if (avatar != null) {
+            combine(
+                set("name", name),
+                set("email", email),
+                set("avatar", avatar)
+            )
         } else {
-            set("name", name)
-            set("email", email)
+            combine(
+                set("name", name),
+                set("email", email)
+            )
         }
 
         val result = usersCollection.updateOne(
             eq("username", username),
-            updateFilter
+            updateOperation
         )
 
         return result.wasAcknowledged()

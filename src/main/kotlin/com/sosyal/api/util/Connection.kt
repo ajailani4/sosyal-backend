@@ -12,3 +12,9 @@ data class CommentConnection(
     val username: String,
     val postId: String
 )
+
+data class ChatConnection(
+    val session: DefaultWebSocketSession,
+    val chatId: String,
+    val username: String
+)

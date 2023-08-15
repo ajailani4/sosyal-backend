@@ -14,7 +14,7 @@ class FavoriteService(database: MongoDatabase) {
     suspend fun addFavorite(favorite: Favorite): ObjectId? {
         val result = favoritesCollection.insertOne(favorite)
 
-        return if (result.wasAcknowledged()) favorite.id else null
+        return result.insertedId?.asObjectId()?.value
     }
 
     suspend fun deleteFavorite(username: String, postId: ObjectId): Boolean {
