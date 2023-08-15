@@ -13,7 +13,7 @@ class CommentService(database: MongoDatabase) {
     suspend fun addComment(comment: Comment): ObjectId? {
         val result = commentsCollection.insertOne(comment)
 
-        return if (result.wasAcknowledged()) comment.id else null
+        return result.insertedId?.asObjectId()?.value
     }
 
     suspend fun getCommentsByPostId(postId: ObjectId) =

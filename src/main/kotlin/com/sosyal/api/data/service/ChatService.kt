@@ -42,6 +42,6 @@ class ChatService(database: MongoDatabase) {
     suspend fun addMessage(message: Message): ObjectId? {
         val result = messagesCollection.insertOne(message)
 
-        return if (result.wasAcknowledged()) message.id else null
+        return result.insertedId?.asObjectId()?.value
     }
 }
