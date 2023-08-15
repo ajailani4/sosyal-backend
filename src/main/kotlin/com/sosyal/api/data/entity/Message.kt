@@ -7,5 +7,6 @@ data class Message(
     @BsonId
     val id: ObjectId? = null,
     val chatId: ObjectId,
+    val username: String,
     val content: String
 )
