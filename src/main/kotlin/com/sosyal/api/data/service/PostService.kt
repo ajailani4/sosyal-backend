@@ -13,7 +13,7 @@ class PostService(database: MongoDatabase) {
     suspend fun addPost(post: Post): ObjectId? {
         val result = postsCollection.insertOne(post)
 
-        return if (result.wasAcknowledged()) post.id else null
+        return result.insertedId?.asObjectId()?.value
     }
 
     suspend fun getAllPosts() = postsCollection.find().toList()
@@ -23,7 +23,7 @@ class PostService(database: MongoDatabase) {
     suspend fun editPost(id: ObjectId, post: Post): ObjectId? {
         val result = postsCollection.replaceOne(eq("_id", id), post)
 
-        return if (result.wasAcknowledged()) id else null
+        return result.upsertedId?.asObjectId()?.value
     }
 
     suspend fun deletePost(id: ObjectId): Boolean {

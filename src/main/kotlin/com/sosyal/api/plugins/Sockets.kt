@@ -1,7 +1,9 @@
 package com.sosyal.api.plugins
 
+import com.sosyal.api.routes.configureChatRoutes
 import com.sosyal.api.routes.configureCommentRoutes
 import com.sosyal.api.routes.configurePostRoutes
+import com.sosyal.api.util.ChatConnection
 import com.sosyal.api.util.CommentConnection
 import com.sosyal.api.util.PostConnection
 import io.ktor.server.websocket.*
@@ -21,8 +23,10 @@ fun Application.configureSockets() {
     routing {
         val postConnections = Collections.synchronizedSet<PostConnection?>(LinkedHashSet())
         val commentConnections = Collections.synchronizedSet<CommentConnection?>(LinkedHashSet())
+        val chatConnections = Collections.synchronizedSet<ChatConnection>(LinkedHashSet())
 
         configurePostRoutes(postConnections)
         configureCommentRoutes(commentConnections)
+        configureChatRoutes(chatConnections)
     }
 }
