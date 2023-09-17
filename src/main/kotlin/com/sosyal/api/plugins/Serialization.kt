@@ -11,6 +11,7 @@ fun Application.configureSerialization() {
     install(ContentNegotiation) {
         json(Json {
             ignoreUnknownKeys = true
+            encodeDefaults = true
         })
     }
 }
