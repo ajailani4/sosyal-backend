@@ -39,39 +39,6 @@ fun Route.configurePostRoutes(postConnections: MutableSet<PostConnection>) {
             postConnections += postConnection
 
             try {
-                val posts = postRepository.getAllPosts()
-
-                if (posts.isNotEmpty()) {
-                    posts.forEach { postDto ->
-                        val isLiked = favoriteRepository.isPostFavorite(
-                            username = username,
-                            postId = postDto.id!!
-                        )
-
-                        postConnection.session.send(
-                            Json.encodeToString(
-                                postDto.copy(
-                                    likes = favoriteRepository.getFavoritesByPostId(postDto.id).size,
-                                    comments = commentRepository.getCommentsByPostId(postDto.id).size,
-                                    isLiked = isLiked
-                                )
-                            )
-                        )
-                    }
-                } else {
-                    postConnection.session.send(
-                        Json.encodeToString(
-                            PostDto(
-                                username = "",
-                                content = "",
-                                likes = 0,
-                                comments = 0,
-                                date = ""
-                            )
-                        )
-                    )
-                }
-
                 for (frame in incoming) {
                     frame as? Frame.Text ?: continue
                     val postDtoText = frame.readText()
@@ -126,6 +93,32 @@ fun Route.configurePostRoutes(postConnections: MutableSet<PostConnection>) {
                 println("Remove $postConnection")
                 postConnections -= postConnection
             }
+        }
+
+        get("/posts") {
+            val principal = call.principal<JWTPrincipal>()
+            val username = principal!!.payload.getClaim("username").asString()
+            
+            val posts = postRepository.getAllPosts().map { postDto ->
+                val isLiked = favoriteRepository.isPostFavorite(
+                    username = username,
+                    postId = postDto.id!!
+                )
+
+                postDto.copy(
+                    likes = favoriteRepository.getFavoritesByPostId(postDto.id).size,
+                    comments = commentRepository.getCommentsByPostId(postDto.id).size,
+                    isLiked = isLiked
+                )
+            }
+
+            call.respond(
+                status = HttpStatusCode.OK,
+                message = BaseResponse(
+                    message = "Posts have been retrieved successfully",
+                    data = posts
+                )
+            )
         }
 
         get("/posts/{id?}") {
