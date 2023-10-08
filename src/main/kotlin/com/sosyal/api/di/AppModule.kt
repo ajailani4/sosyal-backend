@@ -24,6 +24,6 @@ val appModule = module {
     single<UserRepository> { UserRepositoryImpl(get()) }
     single<PostRepository> { PostRepositoryImpl(get(), get()) }
     single<FavoriteRepository> { FavoriteRepositoryImpl(get()) }
-    single<CommentRepository> { CommentRepositoryImpl(get()) }
+    single<CommentRepository> { CommentRepositoryImpl(get(), get()) }
     single<ChatRepository> { ChatRepositoryImpl(get()) }
 }

@@ -5,15 +5,16 @@ import com.sosyal.api.data.dto.response.BaseResponse
 import com.sosyal.api.data.repository.CommentRepository
 import com.sosyal.api.data.repository.UserRepository
 import com.sosyal.api.util.CommentConnection
+import io.ktor.http.*
+import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
+import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.websocket.*
 import io.ktor.websocket.*
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonObject
 import org.koin.ktor.ext.inject
 
 fun Route.configureCommentRoutes(commentConnections: MutableSet<CommentConnection>) {
@@ -33,24 +34,6 @@ fun Route.configureCommentRoutes(commentConnections: MutableSet<CommentConnectio
             commentConnections += commentConnection
 
             try {
-                val comments = commentRepository.getCommentsByPostId(postId)
-
-                if (comments.isNotEmpty()) {
-                    comments.forEach { commentDto ->
-                        commentConnection.session.send(Json.encodeToString(commentDto))
-                    }
-                } else {
-                    commentConnection.session.send(
-                        Json.encodeToString(
-                            CommentDto(
-                                postId = "",
-                                username = "",
-                                content = ""
-                            )
-                        )
-                    )
-                }
-
                 for (frame in incoming) {
                     frame as? Frame.Text ?: continue
                     val commentDtoText = frame.readText()
@@ -70,6 +53,20 @@ fun Route.configureCommentRoutes(commentConnections: MutableSet<CommentConnectio
                 println("Remove $commentConnection")
                 commentConnections -= commentConnection
             }
+        }
+
+        get("/comments/{postId}") {
+            val postId = call.parameters["postId"].toString()
+
+            val comments = commentRepository.getCommentsByPostId(postId)
+
+            call.respond(
+                status = HttpStatusCode.OK,
+                message = BaseResponse(
+                    message = "Comments have been retrieved successfully",
+                    data = comments
+                )
+            )
         }
     }
 }

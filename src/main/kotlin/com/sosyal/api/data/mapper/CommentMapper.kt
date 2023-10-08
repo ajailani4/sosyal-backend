@@ -12,7 +12,7 @@ fun CommentDto.toComment() =
         content = content
     )
 
-fun Comment.toCommentDto() =
+fun Comment.toCommentDto(userAvatar: String? = null) =
     CommentDto(
         id = id.toString(),
         postId = postId.toString(),
