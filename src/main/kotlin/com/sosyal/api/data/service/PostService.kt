@@ -23,7 +23,7 @@ class PostService(database: MongoDatabase) {
     suspend fun editPost(id: ObjectId, post: Post): ObjectId? {
         val result = postsCollection.replaceOne(eq("_id", id), post)
 
-        return result.upsertedId?.asObjectId()?.value
+        return if (result.modifiedCount > 0) id else null
     }
 
     suspend fun deletePost(id: ObjectId): Boolean {

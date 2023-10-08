@@ -9,7 +9,6 @@ data class User(
     val id: ObjectId? = null,
     val name: String,
     val email: String,
-    @BsonProperty("string")
     val avatar: String? = null,
     val username: String,
     val password: String
